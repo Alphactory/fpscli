@@ -12,10 +12,10 @@ add_compile_definitions(NCURSES_WIDECHAR)
 include_directories( ${CURSES_INCLUDE_DIRS} )
 
 # Add CommandLineFPS.cpp file of project root directory as source file
-set(SOURCE_FILES CommandLineFPS.cpp)
+set(SOURCE_FILES BitBornFPSClient.cpp)
 
 # Add executable target with source files listed in SOURCE_FILES variable
-add_executable(CommandLineFPS ${SOURCE_FILES})
+add_executable(BitBornFPSClient ${SOURCE_FILES})
 
 # Link ncursesw library
-target_link_libraries( CommandLineFPS ${CURSES_LIBRARIES} )
+target_link_libraries( BitBornFPSClient ${CURSES_LIBRARIES} )
