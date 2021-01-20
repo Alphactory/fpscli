@@ -5,8 +5,12 @@
 #include <ncurses.h>
 #include <sstream>
 #include <cmath>
-#include <netinet/in.h>
-
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
+#include <sys/socket.h>
+#include <arpa/inet.h>
 using namespace std;
 
 int nScreenWidth = 120;       // Console Screen Size X (columns)
@@ -24,8 +28,7 @@ float fFOV = 3.14159f / 4.0f; // Field of View
 float fDepth = 16.0f;         // Maximum rendering distance
 float fSpeed = 150.0f;        // Walking Speed
 
-int main()
-{
+int main() {
     // NCurses setup
     setlocale(LC_ALL, "");    // Set locale for UTF-8 support
     initscr();                // Initialise NCurses screen
@@ -38,19 +41,39 @@ int main()
     auto *screen = new wchar_t[nScreenWidth * nScreenHeight];
 
     // Create Map of world space # = wall block, . = space
-    char validWalls[2] = { '#', '@' }; // Valid flavours of walls
+    char validWalls[2] = {'#', '@'}; // Valid flavours of walls
     // TODO: Valid collision walls, and valid VISUAL walls? :O
     wstring map;
 
     // Connect to server and get map
-    int sockfd = socket(AF_INET, SOCK_STREAM, 0);
-    if (sockfd == -1) {
-        std::cout << "Failed to create socket. errno: " << errno << std::endl;
-        exit(EXIT_FAILURE);
+    int sock = 0, valread;
+    struct sockaddr_in serv_addr;
+    char *hello = "map\n";
+    char buffer[1024] = {0};
+    if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
+        printf("\n Socket creation error \n");
+        return -1;
     }
 
+    serv_addr.sin_family = AF_INET;
+    serv_addr.sin_port = htons(serverPort);
 
+    // Convert IPv4 and IPv6 addresses from text to binary form
+    if (inet_pton(AF_INET, "127.0.0.1", &serv_addr.sin_addr) <= 0) {
+        printf("\nInvalid address/ Address not supported \n");
+        return -1;
+    }
 
+    if (connect(sock, (struct sockaddr *) &serv_addr, sizeof(serv_addr)) < 0) {
+        printf("\nConnection Failed \n");
+        return -1;
+    }
+    send(sock, hello, strlen(hello), 0);
+    printf("Hello message sent\n");
+    valread = read(sock, buffer, 1024);
+    printf("%s\n", buffer);
+    //
+    
     auto tp1 = chrono::system_clock::now();
     auto tp2 = chrono::system_clock::now();
 

@@ -91,6 +91,7 @@ int main()
             // Send a message to the connection
             string response(wmap.begin(), wmap.end());
             send(connection, response.c_str(), response.size(), 0);
+            cout<<"sent map"<<endl;
         }
         else{
             string response = "invalid command supplied\n";
