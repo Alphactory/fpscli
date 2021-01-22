@@ -72,6 +72,8 @@ int main() {
     printf("Hello message sent\n");
     valread = read(sock, buffer, 1024);
     printf("%s\n", buffer);
+    string stringmap = string(buffer, 1024);
+    map = stringmap;
     //
     
     auto tp1 = chrono::system_clock::now();

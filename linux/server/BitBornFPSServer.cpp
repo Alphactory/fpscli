@@ -29,7 +29,7 @@ int main()
         string tmp;
         string map;
         while (getline(mapFile, tmp)) {
-            map += tmp+"\n";
+            map += tmp;
         }
         wstring temp_wmap(map.begin(), map.end());
         wmap = temp_wmap;
